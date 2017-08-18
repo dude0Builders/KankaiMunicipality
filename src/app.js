@@ -7,9 +7,16 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+import webpack from 'webpack';
+import config from './webpack.config.dev';
 
 var app = express();
 
+const compiler = webpack(config);
+app.use(require('webpack-dev-middleware')(compiler,{
+
+ publicPath: config.output.publicPath
+}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

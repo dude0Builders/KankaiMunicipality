@@ -1,17 +1,29 @@
 {
   "name": "src",
   "version": "0.0.0",
+  "description": "Kankai Municipality Project",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "babel-node ./bin/www"
   },
+  "author": "dude0",
   "dependencies": {
+    "amqp": "^0.2.6",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.24.1",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
+    "css-loader": "^0.28.4",
     "debug": "~2.6.3",
     "ejs": "~2.5.6",
     "express": "~4.15.2",
     "morgan": "~1.8.1",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.4.1",
+    "webpack-dev-middleware": "^1.11.0"
   }
 }
