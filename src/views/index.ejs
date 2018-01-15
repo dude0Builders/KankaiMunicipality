@@ -1,12 +1,387 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Kankai Municipality</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <style src="/javascripts/bundle.js"></style>
+    <link rel='stylesheet' href='/stylesheets/materialize.css' />
+    <link rel='stylesheet' href='/stylesheets/animate.css' />
+    <link rel='stylesheet' href='/stylesheets/fontawesome-all.min.css' />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script src="/javascripts/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.min.js"></script>
+
+  <script src="/javascripts/angularApp.js"></script>
+    <script src="/javascripts/bundle.js"></script>
+    <script src="/javascripts/materialize.js"></script>
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+  <body ng-app="kankai">
+
+      <div ng-controller="navCtrl" >
+          <nav ng-show="isLoggedIn()" class="navbar-fixed" style="z-index:99999;">
+              <div class="nav-wrapper white ">
+                  <a style="padding-left:10px;display:inline;" href="#" class="button-collapse black-text" data-activates="slide-out"><i class="fa fa-bars"></i></a>
+                <a href="#" style="padding-left:10px;" class="brand-logo black-text text-lighten-2"><b>Kankai Municipality</b></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down black-text">
+                  <li ><a href="sass.html" class="black-text">Home</a></li>
+                  <li ><a href="badges.html" class="black-text">Notification</a></li>
+                  <li ><a href="collapsible.html" class="black-text">Token
+                  </a></li>
+                </ul>
+              </div>
+            </nav>
+            </div>
+
+            <ul id="slide-out" class="side-nav">
+                <li><div class="user-view">
+                  <div style="min-height:64px;"></div></li>
+                  <li><a class="waves-effect black-text" href="#!"><i class="fa fa-bell"></i>Notification</a></li>
+                <li><a class="waves-effect black-text" href="/token"><i class="fa fa-ticket-alt"></i>Token Generator</a></li>
+
+                <li><div class="divider"></div></li>
+                <li><a class="subheader">Admin Section</a></li>
+                <li><a class="waves-effect" href="/registeruser"><i class="fa fa-user"></i>Register User</a></li>
+                <li><a class="waves-effect" href="/registerprint"><i class="fa fa-hand-pointer"></i>Register FingerPrint</a></li>
+
+              </ul>
+
+      <ui-view></ui-view>
+
+      <script type="text/ng-template" id="/registeruser.html">
+          <div style="margin-top:20px;" class="container">
+
+          <div class="row">
+            <div class="col s12 m12">
+              <div class="card blue-grey darken-3">
+                <div class="card-content white-text">
+                  <span class="card-title left">
+                    Register User
+                  </span>
+
+                  <div class="row">
+                    <div class="col s12 m12">
+                      <form ng-submit="register()">
+                      <div class="row">
+                        <div class="col s12 m6">
+                          <div class="row">
+                            <div class="input-field col s12">
+                                <input ng-model="user.firstname" id="first_name" type="text" class="validate">
+                                <label for="first_name">First Name</label>
+                              </div>
+                              <div class="input-field col s12">
+                                <input ng-model="user.lastname" id="last_name" type="text" class="validate">
+                                <label for="last_name">Last Name</label>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6">
+                          <div class="row">
+                          <div class="col s12 m6">
+                          <img ng-src="{{filepreview}}" class="center" style="width:170px;height:170px;"/>
+                          </div>
+
+
+                        <div class="col s12 m6">
+                          <div class="row">
+                            <div class="col s6">
+                              <div class="file-field input-field">
+                                <div class="btn">
+                                  <span>Browse</span>
+                                  <input fileinput="file"  type="file" filepreview="filepreview">
+                                </div>
+                                <div class="file-path-wrapper">
+                                  <input class="file-path validate" type="text">
+                                </div>
+                            </div>
+                          </div>
+                          </div>
+                          <div class="row">
+                            <div class="col s6">
+                            <a ng-click="uploadImage()" class="center waves-effect waves-light btn">Upload</a>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+                        <div class="input-field col s12 m6">
+                          <input ng-model="user.username" id="username" type="text">
+                          <label for="username">Username</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                          <select id="usertype" ng-model="usertype">
+                            <option value="" disabled selected>Select User Type</option>
+                            <option ng-repeat="usertype in userTypeList" value="{{usertype.id}}">{{usertype.type}}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="input-field col s12 m6">
+                          <input ng-model="user.password" id="password" type="password">
+                          <label for="password">Password</label>
+                        </div>
+
+                        <div class="input-field col s12 m6">
+                          <input ng-model="user.confirmpassword" id="confirmpassword" type="password">
+                          <label for="confirmpassword">Confirm Password</label>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="input-field col s12 m6">
+                        <input ng-model="user.employeeid" id="employeeid" type="text">
+                        <label for="employeeid">Employee Id</label>
+                        </div>
+                        <div class="col s12 m6">
+                            <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward1" ng-value="'1'"  />
+                            <label for="ward1">Ward 1</label>
+
+                            <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward2" ng-value="'2'"/>
+                            <label  for="ward2">Ward 2</label>
+
+                            <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward3" ng-value="'3'"/>
+                            <label for="ward3">Ward 3</label>
+
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="input-field col s12 m6">
+                          <input ng-model="user.phoneno" id="phonenumber" type="text">
+                          <label for="phonenumber">Phone Number</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                          <input ng-model="user.email" id="email" type="text">
+                          <label for="email">Email</label>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="input-field col s12">
+                          <textarea ng-model="user.address" id="address" class="materialize-textarea"></textarea>
+                            <label>Address</label>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col s12">
+                            <button type="submit" class="right waves-effect waves-light btn-large">Save</button>
+                        </div>
+                      </div>
+                    </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          </div>
+      </script>
+        <script type="text/ng-template" id="/home.html">
+
+          <div style="margin-top:100px;" class="container">
+
+              <div class="carousel carousel-slider">
+                  <a class="carousel-item" href="#one!"><img src=""><h1>Hello</h1></a>
+                  <a class="carousel-item" href="#two!"><img src=""><h1>World</h1></a>
+                  <a class="carousel-item" href="#three!"><img src=""><h1>There</h1></a>
+                  <a class="carousel-item" href="#four!"><img src=""></h1>Good Bye</h1></a>
+              </div>
+
+          </div>
+        </script>
+
+        <script type="text/ng-template" id="/token.html">
+
+          <div style="margin-top:20px;" class="container">
+            <div class="row">
+              <div class="col s12 m12">
+                <div class="card blue-grey darken-3">
+                  <div class="card-content white-text">
+                    <span class="card-title left">Token</span>
+                    <br/>
+                    <br/>
+                    <div class="row">
+                      <div class="col s12 m12">
+
+                        <div class="row">
+                          <div class="col s12 m8">
+                            <!-- <div style="background-color:#213; width:300px; height:400px;"></div>-->
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input ng-model="firstname" id="first_name" type="text" class="validate">
+                                    <label for="first_name">Visitor's Name</label>
+                                  </div>
+                                  <div class="input-field col s12">
+                                      <input ng-model="firstname" id="phonenumber" type="text" class="validate">
+                                      <label for="phonenumber">Phone Number</label>
+                                    </div>
+
+                                  <div class="input-field col s12">
+                                      <select ng-model="firstname" id="department" class="validate">
+                                        <option value="" disabled selected>Select department</option>
+                                        <option value="1">Malpot</option>
+                                        <option value="2">Engineer</option>
+                                        <option value="3">Sifaris</option>
+                                      </select>
+                                      <label>Department</label>
+                                    </div>
+
+                                        <div class="input-field col s12">
+                                          <textarea id="description" class="materialize-textarea"></textarea>
+                                            <label>Description</label>
+                                        </div>
+
+                              </div>
+                              <div class="row">
+                                <div class="col s12">
+                                    <button class="waves-effect waves-light btn-large">Generate Token</button>
+                                </div>
+                              </div>
+
+                          </div>
+                          <div class="col s12 m4">
+                            <!-- <div style=" background-color:#909; width:100px; height:400px;"></div> -->
+                            <div  class="center"><h1>A3</h1></div>
+
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </script>
+
+          <script type="text/ng-template" id="/registerprint.html">
+            <div  style="margin-top:20px;" class="container">
+              <div class="col s12 m12">
+
+                  <div class="row">
+                      <div class="col s12 m12">
+                        <div class="card blue-grey darken-3">
+                          <div class="card-content white-text">
+                            <span class="card-title left">
+                             <img src="images/viewingfingerprint.svg" style="width:30px; height:30px;">
+                              Register Print</span>
+                          <br/>
+                          <br/>
+
+                          <div class="row">
+                            <div class="col s12 m12">
+                                <div class="input-field col s6">
+
+                                    <select id="userid" ng-model="userid" watch ng-change="clear()">
+                                      <option value="" disabled selected>Select User</option>
+                                      <option ng-repeat="user in userlist" value="{{user.id}}">{{user.username}}</option>
+
+                                    </select>
+                                    <label>Select User</label>
+                                  </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col s12 m6">
+                              <div class="center" style="border-right:solid 1px #fff;">
+                              <img ng-show="!register.success && !register.failed" src="/images/fingerprintsimple.svg" style="widht:200px; height:200px;">
+                              <img ng-show="register.success==true" src="/images/fingerprintoutlinesuccess.svg" style="widht:200px; height:200px;">
+                              <img ng-show="register.failed==true" src="/images/fingerprintoutlineerror.svg" style="widht:200px; height:200px;">
+
+                              <div style="margin-top:20px;" class="row">
+                                  <div class="col s12">
+                                    <button ng-click="register()" class="waves-effect waves-light btn-large">Scan</button>
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                            <div class="col s12 m6">
+                              <div class="center">
+                                <img ng-show="!verify.success && !verify.failed" src="/images/fingerprintsimple.svg" style="widht:200px; height:200px;">
+                                <img ng-show="verify.success==true" src="/images/fingerprintoutlinesuccess.svg" style="widht:200px; height:200px;">
+                                <img ng-show="verify.failed==true" src="/images/fingerprintoutlineerror.svg" style="widht:200px; height:200px;">
+
+                              <div style="margin-top:20px;" class="row">
+                                  <div class="col s12">
+                                    <button ng-click="verify()" class="waves-effect waves-light btn-large">Verify</button>
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+              </div>
+            </div>
+          </script>
+
+
+        <script type="text/ng-template" id="/login.html">
+          <div class="container">
+            <div class="row">
+              <div class="col s12 m6 offset-m3">
+                  <div class="row">
+                      <div class="col s12 m12">
+                        <div class="card blue-grey darken-4">
+                          <div class="card-content  white-text">
+                            <span class="card-title center"><h5>Kankai Municipality</h5></span>
+                          </br>
+                          <form ng-submit="login()">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <i style="font-size:22px; padding-top:12px;" class="prefix fa fa-user" aria-hidden="true"></i>
+                                  <input ng-model="username" id="username" type="text" class="validate" >
+                                  <label for="username">Username</label>
+                                </div>
+                                <div class="input-field col s12">
+                                    <i style="font-size:22px; padding-top:12px;" class="prefix fa fa-unlock-alt" aria-hidden="true"></i>
+                                  <input ng-model="password" id="password" type="password" class="validate" >
+                                  <label for="password">Password</label>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col s12">
+                                  <button class="right waves-effect waves-light btn-large"><i class="fa fa-sign-in-alt"></i>&nbsp;&nbsp;Login</button>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+              </div>
+            </div>
+          </div>
+        </script>
+    </div>
   </body>
+  <script>
+    $('.carousel.carousel-slider').carousel({fullWidth: true});
+    $(".button-collapse").sideNav({
+      menuWidth: 300,
+      edge: 'left',
+      closeOnClick: true,
+      draggable: true,
+      onOpen: function(el) {  },
+      onClose: function(el) { },
+
+    });
+    $(document).ready(function() {
+    $('select').material_select();
+  });
+
+  </script>
 </html>
