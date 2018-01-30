@@ -1,3 +1,3 @@
-app.factory('HomeSerivce',['$http' ,function($http){
+app.factory('HomeSerivce',['$http','notificationService' ,function($http, notificationService){
 
 }]);

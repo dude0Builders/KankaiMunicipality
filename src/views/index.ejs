@@ -1,106 +1,342 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Kankai Municipality</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/stylesheets/materialize.css' />
-    <link rel='stylesheet' href='/stylesheets/animate.css' />
-    <link rel='stylesheet' href='/stylesheets/fontawesome-all.min.css' />
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
-    <script src="/javascripts/jquery-3.2.1.min.js"></script>
+
+<head>
+  <title>Kankai Municipality</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel='stylesheet' href='/stylesheets/materialize.css' />
+  <link rel='stylesheet' href='/stylesheets/animate.css' />
+  <link rel='stylesheet' href='/stylesheets/fontawesome-all.min.css' />
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+  <script src="/javascripts/jquery-3.2.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.min.js"></script>
 
   <script src="/javascripts/angularApp.js"></script>
-    <script src="/javascripts/bundle.js"></script>
-    <script src="/javascripts/materialize.js"></script>
-  </head>
-  <body ng-app="kankai">
+  <script src="/javascripts/bundle.js"></script>
+  <script src="/javascripts/materialize.js"></script>
+</head>
 
-      <div ng-controller="navCtrl" >
-          <nav ng-show="isLoggedIn()" class="navbar-fixed" style="z-index:99999;">
-              <div class="nav-wrapper white ">
-                  <a style="padding-left:10px;display:inline;" href="#" class="button-collapse black-text" data-activates="slide-out"><i class="fa fa-bars"></i></a>
-                <a href="#" style="padding-left:10px;" class="brand-logo black-text text-lighten-2"><b>Kankai Municipality</b></a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down black-text">
-                  <li ><a href="sass.html" class="black-text">Home</a></li>
-                  <li ><a href="badges.html" class="black-text">Notification</a></li>
-                  <li ><a href="collapsible.html" class="black-text">Token
-                  </a></li>
-                </ul>
-              </div>
-            </nav>
-            </div>
+<body ng-app="kankai" style="background-image:-webkit-linear-gradient(left top ,rgba(249, 250, 252,0.78) 0,rgba(222, 248, 249, 0.78) 100%)">
 
-            <ul id="slide-out" class="side-nav">
-                <li><div class="user-view">
-                  <div style="min-height:64px;"></div></li>
-                  <li><a class="waves-effect black-text" href="#!"><i class="fa fa-bell"></i>Notification</a></li>
-                <li><a class="waves-effect black-text" href="/token"><i class="fa fa-ticket-alt"></i>Token Generator</a></li>
+  <div ng-controller="navCtrl">
+    <nav ng-show="isLoggedIn()" class="navbar-fixed" style="z-index:99999;">
 
-                <li><div class="divider"></div></li>
-                <li><a class="subheader">Admin Section</a></li>
-                <li><a class="waves-effect" href="/registeruser"><i class="fa fa-user"></i>Register User</a></li>
-                <li><a class="waves-effect" href="/registerprint"><i class="fa fa-hand-pointer"></i>Register FingerPrint</a></li>
 
-              </ul>
 
-      <ui-view></ui-view>
-
-      <script type="text/ng-template" id="/registeruser.html">
-          <div style="margin-top:20px;" class="container">
-
+      <!-- Modal Structure -->
+      <div id="modal1" class="modal modal-fixed-footer">
+        <div class="modal-content black-text">
+          <h4>Profile Settings</h4>
           <div class="row">
             <div class="col s12 m12">
-              <div class="card blue-grey darken-3">
-                <div class="card-content white-text">
-                  <span class="card-title left">
-                    Register User
-                  </span>
+              <form ng-submit="register()">
+                <div class="row">
+                  <div class="col s12 m6">
+                    <div class="row">
+                      <div class="input-field col s12">
+                        <input ng-model="user.firstname" placeholder="" id="first_name" type="text" class="validate" value="{{user.firstname}}">
+                        <label for="first_name">First Name</label>
+                      </div>
+                      <div class="input-field col s12">
+                        <input ng-model="user.lastname" placeholder="" id="last_name" type="text" class="validate" value="{{user.lastname}}">
+                        <label for="last_name">Last Name</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col s12 m6">
+                    <div class="row">
+                      <div class="col s12 m6">
+                        <img ng-show="filepreview" ng-src="{{filepreview}}" class="center" style="width:100px;height:100px;" />
+                        <img ng-hide="filepreview" ng-src="{{profilepic}}" class="center" style="width:100px;height:100px;" />
+                      </div>
 
-                  <div class="row">
-                    <div class="col s12 m12">
-                      <form ng-submit="register()">
+
+                      <div class="col s12 m6">
+                        <div class="row">
+                          <div class="col s12">
+                            <div class="file-field input-field">
+                              <div class="btn">
+                                <span>Browse</span>
+                                <input fileinput="file" type="file" filepreview="filepreview">
+                              </div>
+                              <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col s12">
+                            <a ng-click="uploadImage()" class="center waves-effect waves-light btn">Upload</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="row">
+                  <div class="input-field col s12 m6">
+                    <input ng-model="user.password" placeholder="" id="password" type="password">
+                    <label for="password">Password</label>
+                  </div>
+
+                  <div class="input-field col s12 m6">
+                    <input placeholder="" ng-model="user.confirmpassword" id="confirmpassword" type="password">
+                    <label for="confirmpassword">Confirm Password</label>
+                  </div>
+                </div>
+
+
+
+
+                <div class="row">
+                  <div class="input-field col s12 m6">
+                    <input placeholder="" ng-model="user.phoneno" id="phonenumber" type="text">
+                    <label for="phonenumber">Phone Number</label>
+                  </div>
+                  <div class="input-field col s12 m6">
+                    <input placeholder="" ng-model="user.email" id="email" type="text">
+                    <label for="email">Email</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="input-field col s12">
+                    <textarea placeholder="" ng-model="user.address" id="address" class="materialize-textarea"></textarea>
+                    <label>Address</label>
+                  </div>
+                </div>
+
+
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" ng-click="savechanges()" class="modal-action modal-close waves-effect waves-green btn-flat ">SAVE</a>
+          <a href="#!" ng-click="closeprofilemodal()" class="modal-action modal-close waves-effect waves-green btn-flat ">CANCEL</a>
+        </div>
+      </div>
+
+      <ul id="dropdown1" class="dropdown-content">
+        <li>
+          <a href="#!" ng-click="showprofilemodal()">
+            <i style="font-size:14px;margin-right:5px;" class="fas fa-cog" aria-hidden="true"></i> Profile Setting</a>
+        </li>
+
+        <li class="divider"></li>
+        <li>
+          <a href="#!" ng-click="logout()">
+            <i style="font-size:14px;margin-right:5px;" class="fa fa-sign-out-alt" aria-hidden="true"></i>Logout</a>
+        </li>
+      </ul>
+      <ul id="dropdown2" class="dropdown-content">
+        <li>
+          <a href="#!">New Token Added</a>
+        </li>
+        <li>
+          <a href="#!">Token Handled</a>
+        </li>
+        <li class="divider">New Token Added</li>
+        <li>
+          <a href="#!">three</a>
+        </li>
+      </ul>
+      <div class="nav-wrapper white ">
+        <a style="padding-left:10px;display:inline;" href="#" class="button-collapse black-text" data-activates="slide-out">
+          <i class="fa fa-bars"></i>
+        </a>
+        <a href="#" style="padding-left:10px;" class="brand-logo black-text text-lighten-2">
+          <b>Kankai Municipality</b>
+        </a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down black-text">
+          <li>
+            <a href="sass.html" class="dropdown-button black-text" data-activates="dropdown2">
+              <i class="fa fa-bell"></i>
+            </a>
+          </li>
+
+          <li>
+            <a class="dropdown-button black-text" href="#!" data-activates="dropdown1">
+              <img ng-hide="profilepic" style="margin-top: 10px;height:40px; width:40px;" src="images/user.svg" alt="" class="circle responsive-img">
+              <img ng-show="profilepic" style="margin-top: 10px;height:40px; width:40px;" src="{{profilepic}}" alt="" class="circle responsive-img">
+              <i style="font-size:18px;" class="fa fa-caret-down right"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+
+    <ul id="slide-out" class="side-nav">
+      <li>
+        <div class="user-view">
+          <div style="min-height:64px;"></div>
+      </li>
+      <li>
+        <a class="waves-effect black-text" href="/home">
+          <i class="fa fa-bell"></i>Notification</a>
+      </li>
+      <li>
+        <a class="waves-effect black-text" href="/token">
+          <i class="fa fa-ticket-alt"></i>Token Generator</a>
+      </li>
+      <li>
+          <div class="divider"></div>
+        </li>
+        <li>
+            <a class="subheader">Supervisior Section</a>
+          </li>
+        <li>
+            <a class="waves-effect black-text" href="/updateslider">
+            <i class="fas fa-cog"></i>Update Slider</a>
+        </li>
+      <div ng-show="hasPermission('registeruser')">
+        <li>
+          <div class="divider"></div>
+        </li>
+
+
+        <li>
+          <a class="subheader">Admin Section</a>
+        </li>
+        <li>
+          <a class="waves-effect" href="/registeruser">
+            <i class="fa fa-user"></i>Register User</a>
+        </li>
+        <li>
+          <a class="waves-effect" href="/registerprint">
+            <i class="fa fa-hand-pointer"></i>Register FingerPrint</a>
+        </li>
+      </div>
+    </ul>
+    <div class="fixed-action-btn vertical" style="bottom:45px; right:70px;">
+      <a class="btn-floating btn-large red">
+        <i class="fa fa-th-list"></i>
+      </a>
+      <ul style="left:-125px; width:250px; bottom:5px">
+        <li>
+          <ul class="collapsible" style="max-width:250px;max-height:400px;overflow-y:scroll;" data-collapsible="accordion">
+            <li style="margin-bottom:0px; background-color:#fff;" ng-repeat="token in tokenlist">
+              <div class="collapsible-header">
+                <i class="fa fa-ticket-alt"></i>
+                <strong>{{token.tokennumber}}</strong>
+              </div>
+              <div class="collapsible-body">
+
+                <div class="row">
+                  <div class="col-s12 left">
+                    <table style="width:100%;" class="striped highlight">
+
+                      <tbody>
+                        <tr>
+                          <td style="padding:6px 5px;">
+                            <strong>Visitor</strong>
+                          </td>
+                          <td style="padding:6px 5px;">{{token.visitorname}}</td>
+
+                        </tr>
+                        <tr>
+                          <td style="padding:6px 5px;">
+                            <strong>Desc</strong>
+                          </td>
+                          <td style="padding:6px 5px;">{{token.description}}</td>
+
+                        </tr>
+                        <tr ng-show="token.handledby">
+                          <td style="padding:6px 5px;">
+                            <strong>Handledby</strong>
+                          </td>
+                          <td style="padding:6px 5px;">
+                            <strong>{{token.handledby.firstname}}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:6px 5px;">
+                            <button ng-click="callToken(token._id)">Call</button>
+                          </td>
+                          <td style="padding:6px 5px;">
+                            <button ng-click="markDone(token._id)">Done</button>
+                            </strong>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+
+          </ul>
+        </li>
+        <!--  <li><h3>hello</h3></li> -->
+
+      </ul>
+    </div>
+    </div>
+    <ui-view></ui-view>
+
+    <script type="text/ng-template" id="/registeruser.html">
+      <div style="margin-top:20px;" class="container">
+
+        <div class="row">
+          <div class="col s12 m12">
+            <div class="card blue-grey darken-3">
+              <div class="card-content white-text">
+                <span class="card-title left">
+                  Register User
+                </span>
+
+                <div class="row">
+                  <div class="col s12 m12">
+                    <form ng-submit="register()">
                       <div class="row">
                         <div class="col s12 m6">
                           <div class="row">
                             <div class="input-field col s12">
-                                <input ng-model="user.firstname" id="first_name" type="text" class="validate">
-                                <label for="first_name">First Name</label>
-                              </div>
-                              <div class="input-field col s12">
-                                <input ng-model="user.lastname" id="last_name" type="text" class="validate">
-                                <label for="last_name">Last Name</label>
-                              </div>
+                              <input ng-model="user.firstname" id="first_name" type="text" class="validate">
+                              <label for="first_name">First Name</label>
                             </div>
+                            <div class="input-field col s12">
+                              <input ng-model="user.lastname" id="last_name" type="text" class="validate">
+                              <label for="last_name">Last Name</label>
+                            </div>
+                          </div>
                         </div>
                         <div class="col s12 m6">
                           <div class="row">
-                          <div class="col s12 m6">
-                          <img ng-src="{{filepreview}}" class="center" style="width:170px;height:170px;"/>
-                          </div>
+                            <div class="col s12 m6">
+                              <img ng-src="{{filepreview}}" class="center" style="width:170px;height:170px;" />
+                            </div>
 
 
-                        <div class="col s12 m6">
-                          <div class="row">
-                            <div class="col s6">
-                              <div class="file-field input-field">
-                                <div class="btn">
-                                  <span>Browse</span>
-                                  <input fileinput="file"  type="file" filepreview="filepreview">
+                            <div class="col s12 m6">
+                              <div class="row">
+                                <div class="col s6">
+                                  <div class="file-field input-field">
+                                    <div class="btn">
+                                      <span>Browse</span>
+                                      <input fileinput="file" type="file" filepreview="filepreview">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                      <input class="file-path validate" type="text">
+                                    </div>
+                                  </div>
                                 </div>
-                                <div class="file-path-wrapper">
-                                  <input class="file-path validate" type="text">
+                              </div>
+                              <div class="row">
+                                <div class="col s6">
+                                  <a ng-click="uploadImage()" class="center waves-effect waves-light btn">Upload</a>
                                 </div>
+                              </div>
                             </div>
                           </div>
-                          </div>
-                          <div class="row">
-                            <div class="col s6">
-                            <a ng-click="uploadImage()" class="center waves-effect waves-light btn">Upload</a>
-                            </div>
-                          </div>
-                        </div>
-                        </div>
 
                         </div>
 
@@ -112,9 +348,9 @@
                           <label for="username">Username</label>
                         </div>
                         <div class="input-field col s12 m6">
-                          <select id="usertype" ng-model="usertype">
+                          <select watch id="usertype" ng-model="usertype">
                             <option value="" disabled selected>Select User Type</option>
-                            <option ng-repeat="usertype in userTypeList" value="{{usertype.id}}">{{usertype.type}}</option>
+                            <option watch ng-repeat="usertype in userTypeList" value="{{usertype.id}}">{{usertype.type}}</option>
                           </select>
                         </div>
                       </div>
@@ -132,18 +368,27 @@
 
                       <div class="row">
                         <div class="input-field col s12 m6">
-                        <input ng-model="user.employeeid" id="employeeid" type="text">
-                        <label for="employeeid">Employee Id</label>
+                          <input ng-model="user.employeeid" id="employeeid" type="text">
+                          <label for="employeeid">Employee Id</label>
                         </div>
-                        <div class="col s12 m6">
-                            <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward1" ng-value="'1'"  />
-                            <label for="ward1">Ward 1</label>
+                        <div class="input-field col s12 m6">
+                          <select watch id="department" ng-model="department">
+                            <option value="" disabled selected>Select Department</option>
+                            <option watch ng-repeat="depttype in deptTypeList" value="{{depttype.id}}">{{depttype.type}}</option>
+                          </select>
+                        </div>
 
-                            <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward2" ng-value="'2'"/>
-                            <label  for="ward2">Ward 2</label>
+                      </div>
+                      <div class="row">
+                        <div class="col s12 m12">
+                          <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward1" ng-value="'1'" />
+                          <label for="ward1">Ward 1</label>
 
-                            <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward3" ng-value="'3'"/>
-                            <label for="ward3">Ward 3</label>
+                          <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward2" ng-value="'2'" />
+                          <label for="ward2">Ward 2</label>
+
+                          <input class="with-gap" type="radio" ng-model="user.wardno" name="ward-radio" id="ward3" ng-value="'3'" />
+                          <label for="ward3">Ward 3</label>
 
                         </div>
                       </div>
@@ -161,16 +406,51 @@
                       <div class="row">
                         <div class="input-field col s12">
                           <textarea ng-model="user.address" id="address" class="materialize-textarea"></textarea>
-                            <label>Address</label>
+                          <label>Address</label>
                         </div>
                       </div>
 
                       <div class="row">
                         <div class="col s12">
-                            <button type="submit" class="right waves-effect waves-light btn-large">Save</button>
+                          <button type="submit" class="right waves-effect waves-light btn-large">Save</button>
                         </div>
                       </div>
                     </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </script>
+
+
+    <script type="text/ng-template" id="/home.html">
+
+      <style>
+        carousel.carousel-slider .carousel-fixed-item {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          z-index: 1;
+        }
+
+      </style>
+      <div style="margin-top:0px;box-sizing:border-box">
+
+        <div ng-hide="!calledtoken" id="fixed-item" class="center" style="position:fixed;left:34%; top:36%;z-index:99">
+          <div class="row" style="z-index:999;">
+            <div class="col s12 m12">
+              <div class="card blue-grey darken-3">
+                <div class="card-content white-text">
+                  <span class="card-title left">Token Called</span>
+                  <div class="row">
+                    <div class="col s12">
+                      <h1>{{calledtoken.tokennumber}}</h1>
+                      <p>Called By</p>
+                      <strong>{{calledtoken.handledby.firstname}}</strong>
                     </div>
                   </div>
                 </div>
@@ -178,210 +458,376 @@
             </div>
           </div>
 
-          </div>
-      </script>
-        <script type="text/ng-template" id="/home.html">
+        </div>
 
-          <div style="margin-top:100px;" class="container">
 
-              <div class="carousel carousel-slider">
-                  <a class="carousel-item" href="#one!"><img src=""><h1>Hello</h1></a>
-                  <a class="carousel-item" href="#two!"><img src=""><h1>World</h1></a>
-                  <a class="carousel-item" href="#three!"><img src=""><h1>There</h1></a>
-                  <a class="carousel-item" href="#four!"><img src=""></h1>Good Bye</h1></a>
+        <!--
+        <div style="margint-top:70px;" class="carousel carousel-slider">
+
+
+          <a class="carousel-item" href="#one!">
+            <img style="height:100vh;width:100%" src="/images/1.jpg">
+            <h1>Hello</h1>
+          </a>
+          <a class="carousel-item" href="#two!">
+            <img style="height:100vh;width:100%" src="/images/2.jpg">
+            <h1>World</h1>
+          </a>
+          <a class="carousel-item" href="#three!">
+            <img style="height:100vh;width:100%" src="/images/3.jpg">
+            <h1>There</h1>
+          </a>
+
+        </div>-->
+
+        <div class="slider fullscreen" style="margint-top:70px;">
+          <div class="overlay" style="width:100%;height:100%"></div>
+          <ul class="slides ">
+            <li ng-repeat="slide in slideslist">
+              <img  src="/images/{{slide.image}}"> <!-- random image -->
+
+              <div class=" custom-caption-design caption {{slideAlign[$index % slideAlign.length]}} ">
+                <h3 style="text-shadow:0 1px 5px rgba(0,0,0,.1)">{{slide.caption}}</h3>
+                <h5 style="text-shadow:0 1px 5px rgba(0,0,0,.1)" class="light grey-text text-lighten-3">{{slide.subcaption}}</h5>
               </div>
+            </li>
+            <!-- <li>
+              <img src="/images/2.jpg">
+              <div class="custom-caption-design caption left-align">
+                <h3 style="text-shadow:0 1px 5px rgba(0,0,0,.1)">Left Aligned Caption</h3>
+                <h5 style="text-shadow:0 1px 5px rgba(0,0,0,.1)" class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+              </div>
+            </li>
+            <li>
+              <img src="/images/3.jpg">
+              <div class="custom-caption-design caption right-align">
+                <h3 style="text-shadow:0 1px 5px rgba(0,0,0,.1)">Right Aligned Caption</h3>
+                <h5 style="text-shadow:0 1px 5px rgba(0,0,0,.1)" class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+              </div>
+            </li>-->
+          </ul>
+        </div>
 
-          </div>
-        </script>
+      </div>
+    </script>
 
-        <script type="text/ng-template" id="/token.html">
 
-          <div style="margin-top:20px;" class="container">
+    <script type="text/ng-template" id="/attendance.html">
+      <div style="position:absolute; height:100%; width:100%; padding-top:30px;top:0px; left:0px;background-image:-webkit-linear-gradient(left top ,rgba(159,88,150,.78) 0,rgba(77, 179, 206, 0.78) 100%)">
+
+        <!-- Modal Structure -->
+        <div id="userdetail" class="modal">
+          <div class="modal-content">
+            <h4>Attendance Done!</h4>
             <div class="row">
-              <div class="col s12 m12">
-                <div class="card blue-grey darken-3">
-                  <div class="card-content white-text">
-                    <span class="card-title left">Token</span>
-                    <br/>
-                    <br/>
+              <div class="col s4">
+                  <img ng-hide="filepreview" class="circle responsive-img" ng-src="/images/users/{{user.image}}" class="center " style="width:200px;height:200px;" />
+              </div>
+              <div class="col s8">
+                 <p>Name: <strong>{{user.firstname + ' ' + user.lastname }}</strong></p>
+                 <p>Employee ID: <strong>{{user.employeeid}}</strong></p>
+                 <p>Ward No: <strong>{{user.wardno}}</strong></p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s6 offset-s3 input-field">
+
+            <div class="row">
+              <div class="col s12">
+                <div class="center">
+                  <h1></h1>
+                  <button ng-click="attend()" class="center waves-effect waves-light btn btn-large">Make Attendance!</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="/updateslider.html">
+      <div style="margin-top:20px;" class="container">
+          <div id="slidermodal" class="modal modal-fixed-footer">
+              <div class="modal-content black-text">
+                <h4>Slide Settings</h4>
+                <div class="row">
+                  <div class="col s12 m12">
+
+                    <img ng-show="filepreview" ng-src="{{filepreview}}" class="center" style="width:100%;height:200px;" />
+                    <img ng-hide="filepreview" ng-src="images/{{modal.slide.image}}" class="center" style="width:100%;height:200px;" />
                     <div class="row">
-                      <div class="col s12 m12">
+                      <div class="col s6">
+                      <div class="file-field input-field">
 
-                        <div class="row">
-                          <div class="col s12 m8">
-                            <!-- <div style="background-color:#213; width:300px; height:400px;"></div>-->
-                            <div class="row">
-                                <div class="input-field col s12">
-                                    <input ng-model="firstname" id="first_name" type="text" class="validate">
-                                    <label for="first_name">Visitor's Name</label>
-                                  </div>
-                                  <div class="input-field col s12">
-                                      <input ng-model="firstname" id="phonenumber" type="text" class="validate">
-                                      <label for="phonenumber">Phone Number</label>
-                                    </div>
-
-                                  <div class="input-field col s12">
-                                      <select ng-model="firstname" id="department" class="validate">
-                                        <option value="" disabled selected>Select department</option>
-                                        <option value="1">Malpot</option>
-                                        <option value="2">Engineer</option>
-                                        <option value="3">Sifaris</option>
-                                      </select>
-                                      <label>Department</label>
-                                    </div>
-
-                                        <div class="input-field col s12">
-                                          <textarea id="description" class="materialize-textarea"></textarea>
-                                            <label>Description</label>
-                                        </div>
-
-                              </div>
-                              <div class="row">
-                                <div class="col s12">
-                                    <button class="waves-effect waves-light btn-large">Generate Token</button>
-                                </div>
-                              </div>
-
+                         <div class="btn">
+                            <span>Browse</span>
+                            <input fileinput="file" type="file" filepreview="filepreview">
+                         </div>
+                         <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                         </div>
+                      </div>
+                    </div>
+                          <div class="col s6">
+                            <a ng-click="uploadImage()" class="center waves-effect waves-light btn" style="margin-top:18px;">Upload</a>
                           </div>
-                          <div class="col s12 m4">
-                            <!-- <div style=" background-color:#909; width:100px; height:400px;"></div> -->
-                            <div  class="center"><h1>A3</h1></div>
+                    </div>
+                  </div>
 
+                  <div class="col s12 m12">
+                      <div class="input-field col s12">
+                          <input ng-model="modal.slide.caption" placeholder="Caption" id="caption" type="text" class="validate" value="">
+                          <label for="caption">Caption</label>
+                      </div>
+
+                      <div class="input-field col s12">
+                        <textarea placeholder="Sub-Caption" ng-model="modal.slide.subcaption" id="subcaption" class="materialize-textarea"></textarea>
+                        <label for="subcaption">Sub-Caption</label>
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                  <a href="#!" ng-hide="modal.slide.new" ng-click="savechanges(modal.slide)" class="modal-action modal-close waves-effect waves-green btn-flat ">SAVE</a>
+                  <a href="#!" ng-show="modal.slide.new" ng-click="create(modal.slide)" class="modal-action modal-close waves-effect waves-green btn-flat ">CREATE</a>
+                  <a href="#!" ng-click="closemodal()" class="modal-action modal-close waves-effect waves-green btn-flat ">CANCEL</a>
+                </div>
+            </div>
+          <div class="col s12 m12">
+              <div class="card blue-grey darken-3">
+                <div class="card-content white-text">
+                  <span class="card-title left">Slides</span>
+                  <br/>
+                  <br/>
+                  <div class="row">
+                  <div class="col s12 m4" ng-repeat="slide in slideslist">
+
+
+
+                            <div class="card small">
+                              <div class="card-image">
+                                <img src="images/{{slide.image}}">
+                                <span class="card-title">{{slide.caption}}</span>
+                              </div>
+                              <div class="card-content black-text">
+                                <p class="">{{slide.subcaption}}</p>
+                              </div>
+                              <div class="card-action">
+                                <a href="#" ng-click="remove(slide._id)">Delete</a>
+                                <a href="#" ng-click="showmodal(slide)">Edit</a>
+                              </div>
+                            </div>
+                          </div>
+                  </div>
+                </div>
+
+                 <a style="position:absolute; bottom:30px; right:30px;" ng-click="createnew()" class="btn-floating btn-large waves-effect waves-light green"><i class="fa fa-plus"></i></a>
+              </div>
+            </div>
+      </div>
+    </script>
+
+
+    <script type="text/ng-template" id="/token.html">
+
+      <div style="margin-top:20px;" class="container">
+        <div class="row">
+          <div class="col s12 m12">
+            <div class="card blue-grey darken-3">
+              <div class="card-content white-text">
+                <span class="card-title left">Token</span>
+                <br/>
+                <br/>
+                <div class="row">
+                  <div class="col s12 m12">
+
+                    <div class="row">
+                      <div class="col s12 m8">
+                        <!-- <div style="background-color:#213; width:300px; height:400px;"></div>-->
+                        <div class="row">
+                          <div class="input-field col s12">
+                            <input ng-model="token.visitorname" id="first_name" type="text" class="validate">
+                            <label for="first_name">Visitor's Name</label>
+                          </div>
+                          <div class="input-field col s12">
+                            <input ng-model="token.phoneno" id="phonenumber" type="text" class="validate">
+                            <label for="phonenumber">Phone Number</label>
+                          </div>
+
+                          <div class="input-field col s12">
+                            <select watch ng-model="token.department" id="department" class="validate">
+                              <option value="" disabled selected>Select department</option>
+                              <option ng-repeat="dept in deptTypesList" value="{{dept.id}}">{{dept.type}}</option>
+
+                            </select>
+                            <label>Department</label>
+                          </div>
+
+                          <div class="input-field col s12">
+                            <textarea ng-model="token.description" id="description" class="materialize-textarea"></textarea>
+                            <label>Description</label>
+                          </div>
+
+                        </div>
+                        <div class="row">
+                          <div class="col s12">
+                            <button ng-click="generateToken()" class="waves-effect waves-light btn-large">Generate Token</button>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="col s12 m4">
+                        <!-- <div style=" background-color:#909; width:100px; height:400px;"></div> -->
+                        <div class="center">
+                          <h1>{{token.tokennumber}}</h1>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="/registerprint.html">
+      <div style="margin-top:20px;" class="container">
+        <div class="col s12 m12">
+
+          <div class="row">
+            <div class="col s12 m12">
+              <div class="card blue-grey darken-3">
+                <div class="card-content white-text">
+                  <span class="card-title left">
+                    <img src="images/viewingfingerprint.svg" style="width:30px; height:30px;"> Register Print</span>
+                  <br/>
+                  <br/>
+
+                  <div class="row">
+                    <div class="col s12 m12">
+                      <div class="input-field col s6">
+
+                        <select watch id="userid" ng-model="userid" watch ng-change="clear()">
+                          <option value="" disabled selected>Select User</option>
+                          <option ng-repeat="user in userlist" value="{{user.id}}">{{user.username}}</option>
+
+                        </select>
+                        <label>Select User</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col s12 m6">
+                      <div class="center" style="border-right:solid 1px #fff;">
+                        <img ng-show="!register.success && !register.failed" src="/images/fingerprintsimple.svg" style="widht:200px; height:200px;">
+                        <img ng-show="register.success==true" src="/images/fingerprintoutlinesuccess.svg" style="widht:200px; height:200px;">
+                        <img ng-show="register.failed==true" src="/images/fingerprintoutlineerror.svg" style="widht:200px; height:200px;">
+
+                        <div style="margin-top:20px;" class="row">
+                          <div class="col s12">
+                            <button ng-click="register()" class="waves-effect waves-light btn-large">Scan</button>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="col s12 m6">
+                      <div class="center">
+                        <img ng-show="!verify.success && !verify.failed" src="/images/fingerprintsimple.svg" style="widht:200px; height:200px;">
+                        <img ng-show="verify.success==true" src="/images/fingerprintoutlinesuccess.svg" style="widht:200px; height:200px;">
+                        <img ng-show="verify.failed==true" src="/images/fingerprintoutlineerror.svg" style="widht:200px; height:200px;">
+
+                        <div style="margin-top:20px;" class="row">
+                          <div class="col s12">
+                            <button ng-click="verify()" class="waves-effect waves-light btn-large">Verify</button>
                           </div>
                         </div>
 
                       </div>
                     </div>
                   </div>
+
                 </div>
               </div>
-
             </div>
 
           </div>
-        </script>
-
-          <script type="text/ng-template" id="/registerprint.html">
-            <div  style="margin-top:20px;" class="container">
-              <div class="col s12 m12">
-
-                  <div class="row">
-                      <div class="col s12 m12">
-                        <div class="card blue-grey darken-3">
-                          <div class="card-content white-text">
-                            <span class="card-title left">
-                             <img src="images/viewingfingerprint.svg" style="width:30px; height:30px;">
-                              Register Print</span>
-                          <br/>
-                          <br/>
-
-                          <div class="row">
-                            <div class="col s12 m12">
-                                <div class="input-field col s6">
-
-                                    <select id="userid" ng-model="userid" watch ng-change="clear()">
-                                      <option value="" disabled selected>Select User</option>
-                                      <option ng-repeat="user in userlist" value="{{user.id}}">{{user.username}}</option>
-
-                                    </select>
-                                    <label>Select User</label>
-                                  </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col s12 m6">
-                              <div class="center" style="border-right:solid 1px #fff;">
-                              <img ng-show="!register.success && !register.failed" src="/images/fingerprintsimple.svg" style="widht:200px; height:200px;">
-                              <img ng-show="register.success==true" src="/images/fingerprintoutlinesuccess.svg" style="widht:200px; height:200px;">
-                              <img ng-show="register.failed==true" src="/images/fingerprintoutlineerror.svg" style="widht:200px; height:200px;">
-
-                              <div style="margin-top:20px;" class="row">
-                                  <div class="col s12">
-                                    <button ng-click="register()" class="waves-effect waves-light btn-large">Scan</button>
-                                  </div>
-                                </div>
-
-                              </div>
-                            </div>
-                            <div class="col s12 m6">
-                              <div class="center">
-                                <img ng-show="!verify.success && !verify.failed" src="/images/fingerprintsimple.svg" style="widht:200px; height:200px;">
-                                <img ng-show="verify.success==true" src="/images/fingerprintoutlinesuccess.svg" style="widht:200px; height:200px;">
-                                <img ng-show="verify.failed==true" src="/images/fingerprintoutlineerror.svg" style="widht:200px; height:200px;">
-
-                              <div style="margin-top:20px;" class="row">
-                                  <div class="col s12">
-                                    <button ng-click="verify()" class="waves-effect waves-light btn-large">Verify</button>
-                                  </div>
-                                </div>
-
-                              </div>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
-
-              </div>
-            </div>
-          </script>
+        </div>
+    </script>
 
 
-        <script type="text/ng-template" id="/login.html">
-          <div class="container">
+    <script type="text/ng-template" id="/login.html">
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m6 offset-m3">
             <div class="row">
-              <div class="col s12 m6 offset-m3">
-                  <div class="row">
-                      <div class="col s12 m12">
-                        <div class="card blue-grey darken-4">
-                          <div class="card-content  white-text">
-                            <span class="card-title center"><h5>Kankai Municipality</h5></span>
-                          </br>
-                          <form ng-submit="login()">
-                            <div class="row">
-                                <div class="input-field col s12">
-                                    <i style="font-size:22px; padding-top:12px;" class="prefix fa fa-user" aria-hidden="true"></i>
-                                  <input ng-model="username" id="username" type="text" class="validate" >
-                                  <label for="username">Username</label>
-                                </div>
-                                <div class="input-field col s12">
-                                    <i style="font-size:22px; padding-top:12px;" class="prefix fa fa-unlock-alt" aria-hidden="true"></i>
-                                  <input ng-model="password" id="password" type="password" class="validate" >
-                                  <label for="password">Password</label>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col s12">
-                                  <button class="right waves-effect waves-light btn-large"><i class="fa fa-sign-in-alt"></i>&nbsp;&nbsp;Login</button>
-                                </div>
-                              </div>
-                            </form>
-                          </div>
-
+              <div class="col s12 m12">
+                <div class="card blue-grey darken-4">
+                  <div class="card-content  white-text">
+                    <span class="card-title center">
+                      <h5>Kankai Municipality</h5>
+                    </span>
+                    </br>
+                    <form ng-submit="login()">
+                      <div class="row">
+                        <div class="input-field col s12">
+                          <i style="font-size:22px; padding-top:12px;" class="prefix fa fa-user" aria-hidden="true"></i>
+                          <input ng-model="username" id="username" type="text" class="validate">
+                          <label for="username">Username</label>
+                        </div>
+                        <div class="input-field col s12">
+                          <i style="font-size:22px; padding-top:12px;" class="prefix fa fa-unlock-alt" aria-hidden="true"></i>
+                          <input ng-model="password" id="password" type="password" class="validate">
+                          <label for="password">Password</label>
                         </div>
                       </div>
-                    </div>
+                      <div class="row">
+                        <div class="col s12">
+                          <button class="right waves-effect waves-light btn-large">
+                            <i class="fa fa-sign-in-alt"></i>&nbsp;&nbsp;Login</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>
-        </script>
+        </div>
+      </div>
+    </script>
     </div>
-  </body>
-  <script>
-    $('.carousel.carousel-slider').carousel({fullWidth: true});
-    $(".button-collapse").sideNav({
-      menuWidth: 300,
-      edge: 'left',
-      closeOnClick: true,
-      draggable: true,
-      onOpen: function(el) {  },
-      onClose: function(el) { },
+</body>
+<script>
+  $('.carousel.carousel-slider').carousel({
+    fullWidth: true
+  });
+  $(".button-collapse").sideNav({
+    menuWidth: 300,
+    edge: 'left',
+    closeOnClick: true,
+    draggable: true,
+    onOpen: function (el) {},
+    onClose: function (el) {},
 
-    });
-    $(document).ready(function() {
+  });
+  $(document).ready(function () {
     $('select').material_select();
   });
 
-  </script>
+</script>
+
 </html>

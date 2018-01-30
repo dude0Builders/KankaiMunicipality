@@ -1,4 +1,4 @@
-app.controller('registerUserCtrl', ['$scope','userService','fileUpload',function($scope, userService,fileUpload){
+app.controller('registerUserCtrl', ['$scope','userService','fileUpload','userTypes','deptTypes',function($scope, userService,fileUpload,userTypes, deptTypes){
 
   angular.element(document).ready(function () {
     $('.modal').modal();
@@ -17,6 +17,7 @@ app.controller('registerUserCtrl', ['$scope','userService','fileUpload',function
     email:'',
     address:'',
     image:'',
+    departmenttype:''
   };
 
   $scope.uploadImage = function(){
@@ -33,15 +34,14 @@ app.controller('registerUserCtrl', ['$scope','userService','fileUpload',function
   });
  };
 
-$scope.userTypeList = [];
-userService.getAllUsersType().then(function(res){
-  $scope.userTypeList = res.data;
-  }).catch(function(err){
-    console.log('Error resolve userType list');
-  });
+$scope.userTypeList = userTypes;
+$scope.deptTypeList = deptTypes;
 
   $scope.register = function() {
     var usertype = $('#usertype').val();
+    var depttype = $('#department').val();
+
+    $scope.user.departmenttype = depttype;
     if(!$scope.user.username || !$scope.user.password || !usertype){
       Materialize.toast("Username and Password is compulsory!!",3000,'red');
       return;

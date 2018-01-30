@@ -1,9 +1,23 @@
 var app = angular.module('kankai', ['ui.router']);
 
+var currentstate = '';
+function forceLogin($state,$timeout){
+  $timeout(function() {
+    // This code runs after the authentication promise has been rejected.
+    // Go to the log-in page
+    $state.go('login',{},{reload:true});
+  },200);
+}
+
 function authenticate($q, user, $state, $timeout) {
   if (user.isLoggedIn()) {
+
     // Resolve the promise successfully
-    return $q.when()
+
+
+      return $q.when();
+
+
   } else {
     // The next bit of code is asynchronously tricky.
 
@@ -37,6 +51,11 @@ app.config(['$stateProvider', '$urlRouterProvider','$locationProvider', function
       login: ['$q', '$rootScope','$state','authService','$timeout', function($q, $rootScope, $state,authService, $timeout) {
        authenticate($q,authService,$state,$timeout);
 
+      }],
+      slides: ['sliderService', function(sliderService){
+         return sliderService.getAll().then(function(res){
+           return res.data;
+         })
       }]
     }
   }).state('registerprint', {
@@ -44,7 +63,12 @@ app.config(['$stateProvider', '$urlRouterProvider','$locationProvider', function
     templateUrl:'/registerprint.html',
     controller:'fingerPrintCtrl',
     resolve:{
-      login: ['$q', '$rootScope','$state','authService','$timeout', function($q, $rootScope, $state,authService, $timeout) {
+      users: ['userService', function(userService){
+       return userService.getAllUsers();
+      }],
+      login: ['$q', '$rootScope','$state','authService','$timeout','userService', function($q, $rootScope, $state,authService, $timeout, userService) {
+
+
         authenticate($q,authService,$state,$timeout);
 
        }]
@@ -55,7 +79,14 @@ app.config(['$stateProvider', '$urlRouterProvider','$locationProvider', function
     templateUrl:'/registeruser.html',
     controller:'registerUserCtrl',
     resolve:{
-      login: ['$q', '$rootScope','$state','authService','$timeout', function($q, $rootScope, $state,authService, $timeout) {
+      userTypes: ['userService', function(userService){
+        return userService.getAllUserTypes();
+       }],
+       deptTypes: ['userService', function(userService){
+        return userService.getAllDepartment();
+       }],
+      login: ['$q', '$rootScope','$state','authService','$timeout','userService', function($q, $rootScope, $state,authService, $timeout, userService) {
+        userService.getAllUserTypes().then(res => {$('select').material_select();});
         authenticate($q,authService,$state,$timeout);
 
        }]
@@ -65,10 +96,36 @@ app.config(['$stateProvider', '$urlRouterProvider','$locationProvider', function
     templateUrl:'/token.html',
     controller:'tokenCtrl',
     resolve:{
+
+      deptTypes: ['userService', function(userService){
+        return userService.getAllDepartment();
+       }],
       login: ['$q', '$rootScope','$state','authService','$timeout', function($q, $rootScope, $state,authService, $timeout) {
         authenticate($q,authService,$state,$timeout);
 
        }]
+    }
+  })
+  .state('attendance', {
+    url:'/attendance',
+    templateUrl:'/attendance.html',
+    controller:'attendanceCtrl',
+    resolve:{
+      login: ['$q', '$rootScope','$state','authService','$timeout', function($q, $rootScope, $state,authService, $timeout) {
+        authenticate($q,authService,$state,$timeout);
+
+       }]
+    }
+  }).state('updateslider',{
+    url:'/updateslider',
+    templateUrl:'/updateslider.html',
+    controller:'sliderCtrl',
+    resolve:{
+      slides: ['sliderService', function(sliderService){
+         return sliderService.getAll().then(function(res){
+           return res.data;
+         })
+      }]
     }
   })
   // .state('foods', {

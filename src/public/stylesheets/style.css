@@ -1,0 +1,37 @@
+.custom-dropdown {
+  top: 66px;
+  width: 96.25px;
+  opacity: 1;
+  left: 932px;
+  position:absolute;
+  display: none;
+  z-index:999;
+}
+
+.overlay {
+  top: 0;
+  position: absolute;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.5);
+}
+.custom-caption-design {
+  background-color: rgba(255,255,255,.03);
+  background-clip: padding-box;
+    border: 3px solid transparent;
+    border-radius: 7px;
+}
+
+
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown:hover #dropdown2 {
+  display: block;
+}

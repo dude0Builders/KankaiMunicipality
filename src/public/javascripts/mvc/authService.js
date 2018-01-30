@@ -32,6 +32,31 @@ app.factory('authService', ['$http', '$window', function ($http, $window) {
     }
   };
 
+  auth.currentUserId = function(){
+    if (auth.isLoggedIn()) {
+      var token = auth.getToken();
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+      return payload._id;
+    }
+  }
+
+  auth.wardno = function(){
+    if (auth.isLoggedIn()) {
+      var token = auth.getToken();
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+
+      return payload.wardno;
+    }
+  }
+
+  auth.hasPermission = (permission) => {
+    if (auth.isLoggedIn()) {
+      var token = auth.getToken();
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+
+      return payload.permissions.includes(permission);
+    }
+  }
   auth.register = function (user) {
     return $http.post('/register', user).success(function (data) {
       auth.saveToken(data.token);
@@ -43,7 +68,19 @@ app.factory('authService', ['$http', '$window', function ($http, $window) {
 
   };
 
+  auth.hasPermissionFor = statename => {
+    switch(statename){
+      case 'registerprint':
+      case 'registeruser':
+      return auth.hasPermission('registeruser');
+
+      default:
+      return true;
+    }
+  }
+
   auth.logOut = function () {
+    console.log('Logging out user');
     $window.localStorage.removeItem('kankai');
   }
   return auth;

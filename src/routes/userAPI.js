@@ -1,4 +1,4 @@
-import {router,auth} from "./index";
+import {router,auth, guard} from "./index";
 import user from '../models/userModel';
 import userType from '../models/userTypeModel';
 import mongoose from 'mongoose';
@@ -11,13 +11,16 @@ import shortid from 'shortid';
 var User = mongoose.model('Users');
 var UserType = mongoose.model('UserType');
 
-router.get('/user/list', auth, function (req, res, next) {
+router.get('/user/list', auth, guard.check('updateuser'), function (req, res, next) {
   User.find(function (err, users) {
     if (err)
       res.status(500).json({
         message: 'Error while fetching users list'
       })
       var result=[];
+      if(!users){
+        res.status(404);
+      }
       users.forEach(function(data, index){
         console.log(index +", "+ data);
         result.push({'username':data.username, 'id':data._id});
@@ -25,6 +28,7 @@ router.get('/user/list', auth, function (req, res, next) {
     res.send(result);
   });
 });
+
 
 router.post('/register',  function (req, res, next) {
   if (!req.body.username || !req.body.password) {
@@ -43,13 +47,20 @@ router.post('/register',  function (req, res, next) {
   user.employeeid = req.sanitize(req.body.employeeid);
   user.address = req.sanitize(req.body.address);
   user.image = req.sanitize(req.body.image);
+  user.departmenttype = req.sanitize(req.body.departmenttype)
   var promise = user.save();
   promise.then(function (data) {
-    res.json({
-      token: user.generateJWT(),
-      id:data._id
-    });
+
+      return res.json({
+
+        token: user.generateJWT(null),
+        id:data._id
+
+    })
+
+
   }).catch(function (err) {
+    console.log(err);
     return res.status(500).json(err.message);
   })
 });
@@ -58,6 +69,7 @@ router.param('userid', function (req, res, next, id) {
   var query = User.findById(id);
   query.exec(function (err, user) {
     if (err) {
+      console.log('no such user');
       return next(err);
     }
     if (!user)
@@ -66,10 +78,28 @@ router.param('userid', function (req, res, next, id) {
     return next();
   })
 })
-
+router.get('/user/:userid', auth, function(req,res, next){
+   const result = {
+     firstname:req.user.firstname,
+     lastname:req.user.lastname,
+     email:req.user.email,
+     phoneno: req.user.phoneno,
+     address:req.user.address,
+     image:req.user.image
+    };
+    res.json(result);
+})
 router.put('/user/:userid', auth, function (req, res, next) {
   var user = req.user;
+  user.firstname = req.body.firstname || user.firstname;
+  user.lastname = req.body.lastname || user.lastname;
+  user.email = req.body.email || user.email;
+  user.phoneno = req.body.phoneno || user.phoneno;
+  user.image = req.body.image || user.image;
+  user.address = req.body.address || user.address;
+  if(req.body.password){
   user.setPassword(req.sanitize(req.body.password));
+  }
   user.save(function (err) {
     if (err) {
       return next(err);
@@ -89,13 +119,21 @@ router.post('/login', function (req, res, next) {
   var password = req.sanitize(req.body.password);
   passport.authenticate('local', function (err, user, info) {
     if (err) return next(err);
-    if (user) {
-      return res.json({
-        token: user.generateJWT()
-      });
-    } else {
-      return res.status(401).json(info);
-    }
+    if(!user) return next(info);
+    user.populate('type', function(err, popuser){
+      if(err){
+        console.log('Error while populating types '+ err.message);
+        return res.status(500).json({message:'Error while populating types '+ err.message})
+      }
+      if (popuser) {
+        return res.json({
+          token: user.generateJWT(popuser.type[0].roles)
+        });
+      } else {
+        return res.status(401).json(info);
+      }
+    })
+
 
   })(req, res, next);
 })
@@ -169,6 +207,9 @@ router.get('/userType/list', auth, function(req, res,next){
   UserType.find().then(function(data){
     console.log(data);
     var result=[];
+    if(!data){
+      res.status(500);
+    }
     data.forEach(function(data,index){
       result.push({'id':data._id, 'type':data.type.charAt(0).toUpperCase() + data.type.slice(1)});
     })
@@ -231,3 +272,6 @@ router.post('/uploadImage', auth, function(req, res, next){
   });
   })
 })
+
+
+export default router;

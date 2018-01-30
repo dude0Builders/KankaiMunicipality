@@ -1,15 +1,15 @@
-app.controller('fingerPrintCtrl', ['$scope','fingerPrintService','userService',function($scope,fingerPrintService,userService){
+app.controller('fingerPrintCtrl', ['$scope','fingerPrintService','userService','users',function($scope,fingerPrintService,userService, users){
 
-  $scope.userlist  = [];
+
+  console.log(users);
+  $scope.userlist  = users;
   $scope.userid='';
 
 
   $scope.register = {'success':'', 'failed':''};
-  //$scope.register.success='';
-  //$scope.register.failed='';
+
   $scope.verify= {'success':'','failed':''};
-  //$scope.verify.success='';
-  //$scope.verify.failed='';
+
 
 
   var clear = function(){
@@ -17,7 +17,7 @@ app.controller('fingerPrintCtrl', ['$scope','fingerPrintService','userService',f
     $scope.verify.success=false;
     $scope.verify.failed=false;
     $scope.register.success=false;
-  $scope.register.failed=false;
+    $scope.register.failed=false;
 
   }
   clear();
@@ -26,16 +26,13 @@ app.controller('fingerPrintCtrl', ['$scope','fingerPrintService','userService',f
       clear();
       $scope.$apply();
   });
+
   angular.element(document).ready(function () {
     $('.modal').modal();
     $('select').material_select();
     });
 
-var fetchUsers = function(){userService.getAllUsers().then(function(res){
-    $scope.userlist = res.data;
-});
-}
-fetchUsers();
+
 
 
 $scope.register = function(){
@@ -56,9 +53,7 @@ $scope.register = function(){
   })
 }
 
-$scope.hello = function(){
-  alert('hello');
-}
+
 
 $scope.verify = function(){
   $scope.verify.success='';
