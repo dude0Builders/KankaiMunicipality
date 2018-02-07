@@ -1,6 +1,9 @@
 import {router} from './index';
 import attendanceModel from '../models/attendanceModel';
 import mongoose from 'mongoose';
+mongoose.set('debug', true);
+import moment from 'moment';
+const ObjectId = mongoose.Types.ObjectId;
 var Attendance = mongoose.model('Attendance');
 var User = mongoose.model('Users');
 
@@ -15,8 +18,8 @@ router.post('/attendance/attend', function(req, res){
  var time = req.sanitize(req.body.time);
  var attendance = new Attendance();
  attendance.userid = userid;
- attendance.projdate = date;
- //attendance.time = time;
+
+ //attendance.time.push(time);
  attendance.save().then(function(data){
    data.populate('userid', function(err, user){
     if(err){
@@ -63,3 +66,84 @@ router.get('/attendance/:userid', function(req, res){
     return res.status(200).json(attend);
   })
 });
+
+
+router.get('/attendance/past/:days/:userid', function(req, res, next){
+  //TODO: get last specified "days" attendance
+  //Need to use mongo aggregate and group query.
+  /*
+  modify the projdate $gte and lt values based on the days param
+  also put generate the boundaries accordingly. make sure you store
+  one extra boundary at the end.
+*/
+
+  const today = moment().startOf('day');
+  const lastDays = moment(today).subtract(req.params.days,'days');
+  let boundaries = [];
+  for(let i=req.params.days; i>=0; i--){
+      boundaries.push(moment(today).subtract(i, 'days').toDate())
+  }
+  boundaries.push(moment(today).add(1,'days').toDate());
+  console.log(`
+  {
+    $match: {
+      $and: [{
+        userid: "5a6337a69a7d3b1068703cc8"
+      }, {
+        projdate: {
+          $gte: ${today.toDate()},
+          $lt: ${lastDays.toDate()}
+        }
+      }]
+    }
+  }, {
+    $bucket: {
+      groupBy: "$projdate",
+      boundaries: [${boundaries}],
+      default: "Other",
+      output: {
+        "userid": {
+          $first: "$userid"
+        },
+        "time": {
+          $push: "$time"
+        }
+      }
+    }
+  }
+  `)
+   Attendance.aggregate([
+    {
+      '$match': {
+        '$and': [{
+          'userid': new ObjectId(req.params.userid)
+        }, {
+          'projdate': {
+            '$gte': lastDays.toDate(),
+            '$lt': today.toDate()
+          }
+        }]
+      }
+    },{
+      $bucket: {
+        groupBy: "$projdate",
+        boundaries: [...boundaries],
+        default: "Other",
+        output: {
+          "userid": {
+            $first: "$userid"
+          },
+          "time": {
+            $push: "$time"
+          }
+        }
+      }
+    }
+   ], function(err, data){
+   if(err){
+      return res.status(500).json({'message':err.message})
+   }
+   console.log(data);
+   return res.json(data);
+  });
+})

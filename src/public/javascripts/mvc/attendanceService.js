@@ -10,6 +10,10 @@ app.factory('attendanceService', ['$http', function($http){
       return $http.get(`/attendance/${userid}`);
   }
 
+  obj.getLastAttend = function(days){
+    //TODO: Fetch attendance of past specified days.
+  }
+
 
   return obj;
 }])

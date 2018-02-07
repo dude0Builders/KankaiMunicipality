@@ -127,6 +127,15 @@ app.config(['$stateProvider', '$urlRouterProvider','$locationProvider', function
          })
       }]
     }
+  }).state('attendancereport',{
+    url:'/attendancereport',
+    templateUrl:'/attendancereport.html',
+    controller:'attendanceCtrl',
+    resolve: {
+      slides: ['attendanceService', function(attendanceService){
+        return '';
+      }]
+    }
   })
   // .state('foods', {
   //   url:'/foods',
